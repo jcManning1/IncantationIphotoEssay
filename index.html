@@ -83,7 +83,7 @@
     /* The room you are in turns yellow with black type. */
     .nav button[aria-current="page"] { background: var(--signal); color: var(--ink); }
 
-    /* "Home" at the top left. Hidden on the poster, shown only after you leave it. */
+    /* "Home" at the top left. Hidden on the title card, shown only after you leave it. */
     .home-link {
       position: fixed;
       top: 0;
@@ -111,7 +111,7 @@
     body[data-view="essay"] #essay,
     body[data-view="about"] #about { display: block; }
 
-    /* Poster fills the screen without cropping. Looks for poster.jpg beside this file. */
+    /* Title card fills the screen without cropping, so the yellow words stay whole. */
     #home img {
       display: block;
       width: 100%;
@@ -267,7 +267,7 @@
   </style>
 </head>
 <body data-view="home">
-  <!-- Way back to the poster. The CSS hides this while data-view is "home". -->
+  <!-- Way back to the title card. The CSS hides this while data-view is "home". -->
   <a class="home-link" href="#home">Home</a>
 
   <!-- Top-right menu. data-go tells the script which room to open. -->
@@ -278,10 +278,11 @@
     </ul>
   </nav>
 
-  <!-- Room 1: the poster. -->
+  <!-- Room 1: the title card. -->
   <main id="home" class="view">
     <h1 class="sr-only">GET OUT OF YOUR HEAD</h1>
-    <img src="poster.jpg" alt="Poster for GET OUT OF YOUR HEAD: a blurred head inside a swirling vortex, the title repeated in white and once in yellow.">
+    <!-- Homepage photo. The file GOOYHtitleCard.png must sit next to this HTML file. -->
+    <img src="GOOYHtitleCard.png" alt="Title card for GET OUT OF YOUR HEAD: yellow lettering over a blurred head on a gray, scan-lined field.">
   </main>
 
   <!-- Room 2: the photo essay and the sound controls. -->
@@ -411,7 +412,7 @@
       });
     });
 
-    // Home returns to the poster and stops the sound.
+    // Home returns to the title card and stops the sound.
     document.querySelector(".home-link").addEventListener("click", (event) => {
       event.preventDefault();
       location.hash = "home";
@@ -433,9 +434,10 @@
       audio.play().catch(() => setSoundUi("blocked"));
     });
 
-    // On load, open the room named after the # in the address. No hash means the poster.
+    // On load, open the room named after the # in the address. No hash means the title card.
     const initial = (location.hash || "#home").slice(1);
     show(initial === "essay" || initial === "about" ? initial : "home", false);
   </script>
 </body>
 </html>
+
