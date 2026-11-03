@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>GET OUT OF YOUR HEAD</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,550;1,6..72,400&family=Oswald:wght@500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --ink: #111111;
+      --paper: #f3f1ea;
+      --signal: #ffe14d;
+      --haze: #c6c4bc;
+      --graphite: #3a3a36;
+      --display: "Oswald", "Arial Narrow", Impact, sans-serif;
+      --serif: "Newsreader", Georgia, "Times New Roman", serif;
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      background: var(--ink);
+      color: var(--paper);
+      font-family: var(--serif);
+      text-rendering: optimizeLegibility;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    button { cursor: pointer; font: inherit; background: none; border: 0; color: inherit; }
+    button:focus-visible, a:focus-visible { outline: 2px solid var(--signal); outline-offset: 3px; }
+    ::selection { background: var(--signal); color: var(--ink); }
+
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    .nav {
+      position: fixed;
+      top: 0;
+      right: 0;
+      z-index: 40;
+      background: var(--ink);
+      border-left: 4px solid var(--signal);
+    }
+
+    .nav button {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      min-height: 44px;
+      padding: 0 16px;
+      font-family: var(--display);
+      font-size: 1.125rem;
+      letter-spacing: 0.02em;
+      white-space: nowrap;
+      color: var(--paper);
+    }
+
+    .nav li + li { border-top: 1px solid rgba(243, 241, 234, 0.15); }
+    .nav ul { list-style: none; margin: 0; padding: 0; }
+    .nav button:hover { color: var(--signal); }
+    .nav button[aria-current="page"] { background: var(--signal); color: var(--ink); }
+
+    .home-link {
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 40;
+      display: none;
+      align-items: center;
+      min-height: 44px;
+      padding: 0 16px;
+      background: var(--ink);
+      border-right: 4px solid var(--signal);
+      color: var(--paper);
+      font-family: var(--display);
+      font-size: 1.125rem;
+      letter-spacing: 0.02em;
+      text-decoration: none;
+    }
+
+    .home-link:hover { color: var(--signal); }
+    body:not([data-view="home"]) .home-link { display: flex; }
+
+    .view { display: none; min-height: 100dvh; }
+    body[data-view="home"] #home,
+    body[data-view="essay"] #essay,
+    body[data-view="about"] #about { display: block; }
+
+    #home img {
+      display: block;
+      width: 100%;
+      height: 100dvh;
+      object-fit: contain;
+      background: var(--ink);
+    }
+
+    #essay { padding: 8rem 1.25rem 7rem; }
+    #about { padding: 9rem 1.5rem 6rem; background: var(--paper); color: var(--ink); }
+
+    .wrap { max-width: 48rem; margin: 0 auto; }
+    .kicker {
+      margin: 0;
+      font-family: var(--display);
+      font-size: 0.875rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--haze);
+    }
+    #about .kicker, #about dt { color: var(--graphite); }
+
+    h1 {
+      margin: 0.75rem 0 0;
+      font-family: var(--display);
+      font-weight: 500;
+      font-size: 3rem;
+      line-height: 0.95;
+    }
+
+    .lede {
+      max-width: 36rem;
+      margin: 1.5rem 0 0;
+      font-size: 1.25rem;
+      line-height: 1.55;
+      color: var(--haze);
+    }
+
+    .rule { width: 4rem; height: 4px; margin-top: 2rem; background: var(--signal); }
+    #about .copy { margin-top: 2rem; font-size: 1.25rem; line-height: 1.6; }
+    #about .copy p { margin: 0 0 1.5rem; }
+    #about .work-name { font-family: var(--display); letter-spacing: 0.04em; }
+
+    dl {
+      display: grid;
+      gap: 2rem;
+      margin: 3.5rem 0 0;
+      padding-top: 2rem;
+      border-top: 1px solid rgba(17, 17, 17, 0.15);
+    }
+    dt { font-family: var(--display); font-size: 0.875rem; letter-spacing: 0.16em; text-transform: uppercase; }
+    dd { margin: 0.5rem 0 0; font-family: var(--display); font-size: 1.5rem; line-height: 1.15; }
+
+    .sound { display: flex; flex-wrap: wrap; align-items: center; gap: 1rem; margin-top: 2rem; }
+    .sound p { margin: 0; display: flex; align-items: center; gap: 0.75rem; font-family: var(--display); letter-spacing: 0.04em; color: var(--signal); }
+    .play {
+      min-height: 44px;
+      padding: 0 16px;
+      background: var(--signal);
+      color: var(--ink);
+      font-family: var(--display);
+      font-size: 1.125rem;
+    }
+    .silence {
+      min-height: 44px;
+      padding: 0 4px;
+      font-family: var(--display);
+      font-size: 1.125rem;
+      color: var(--paper);
+      text-decoration: underline;
+      text-underline-offset: 4px;
+      text-decoration-color: rgba(243, 241, 234, 0.4);
+    }
+    .silence:hover { color: var(--signal); }
+
+    .meter { display: flex; align-items: flex-end; gap: 3px; height: 14px; }
+    .meter span {
+      width: 3px;
+      height: 100%;
+      background: var(--signal);
+      transform-origin: bottom;
+      animation: pulse-bar 0.9s ease-in-out infinite;
+    }
+    .meter span:nth-child(2) { animation-delay: 0.15s; }
+    .meter span:nth-child(3) { animation-delay: 0.3s; }
+
+    .plates {
+      list-style: none;
+      margin: 4rem auto 0;
+      padding: 0 0 0 1.25rem;
+      max-width: 48rem;
+      display: flex;
+      flex-direction: column;
+      gap: 4rem;
+      border-left: 1px solid var(--signal);
+    }
+    figcaption {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 0.75rem;
+      font-family: var(--display);
+    }
+    .plate-id { font-size: 1.5rem; color: var(--signal); }
+    .plate-label { font-size: 0.875rem; letter-spacing: 0.18em; color: var(--haze); }
+    .frame {
+      position: relative;
+      aspect-ratio: 4 / 5;
+      overflow: hidden;
+      border: 1px solid rgba(243, 241, 234, 0.15);
+      background: rgba(243, 241, 234, 0.05);
+    }
+    .frame img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .numeral {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      color: transparent;
+      -webkit-text-stroke: 1.5px var(--haze);
+      font-family: var(--display);
+      font-weight: 500;
+      font-size: 6rem;
+      letter-spacing: 0.04em;
+      line-height: 0.85;
+    }
+
+    @keyframes pulse-bar {
+      0%, 100% { transform: scaleY(0.35); }
+      50% { transform: scaleY(1); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .meter span { animation: none; transform: none; }
+    }
+    @media (min-width: 640px) {
+      h1 { font-size: 4.5rem; }
+      #about h1 { font-size: 6rem; }
+      #essay { padding-left: 2rem; padding-right: 2rem; }
+      .plates { padding-left: 2rem; }
+      .numeral { font-size: 8rem; }
+      dl { grid-template-columns: repeat(3, 1fr); }
+    }
+  </style>
+</head>
+<body data-view="home">
+  <a class="home-link" href="#home">Home</a>
+
+  <nav class="nav" aria-label="Pages">
+    <ul>
+      <li><button type="button" data-go="essay">GET OUT OF YOUR HEAD</button></li>
+      <li><button type="button" data-go="about">About</button></li>
+    </ul>
+  </nav>
+
+  <main id="home" class="view">
+    <h1 class="sr-only">GET OUT OF YOUR HEAD</h1>
+    <img src="poster.jpg" alt="Poster for GET OUT OF YOUR HEAD: a blurred head inside a swirling vortex, the title repeated in white and once in yellow.">
+  </main>
+
+  <main id="essay" class="view">
+    <header class="wrap">
+      <p class="kicker">Photo essay</p>
+      <h1>GET OUT OF YOUR HEAD</h1>
+      <p class="lede">Ten plates, in order. The soundscape starts with this room and loops until you leave.</p>
+      <div class="sound">
+        <p id="sound-status" hidden>
+          <span class="meter" aria-hidden="true"><span></span><span></span><span></span></span>
+          Soundscape looping
+        </p>
+        <button type="button" class="silence" id="silence" hidden>Silence</button>
+        <button type="button" class="play" id="play">Play soundscape</button>
+      </div>
+    </header>
+
+    <!--
+      Add a photo by setting data-src on a plate, for example:
+      <li class="plate" data-src="01.jpg">
+      Put 01.jpg through 10.jpg in this same folder.
+    -->
+    <ol class="plates">
+      <li class="plate" data-src=""><figure><figcaption><span class="plate-id">01</span><span class="plate-label">PLATE</span></figcaption><div class="frame"><span class="numeral">01</span></div></figure></li>
+      <li class="plate" data-src=""><figure><figcaption><span class="plate-id">02</span><span class="plate-label">PLATE</span></figcaption><div class="frame"><span class="numeral">02</span></div></figure></li>
+      <li class="plate" data-src=""><figure><figcaption><span class="plate-id">03</span><span class="plate-label">PLATE</span></figcaption><div class="frame"><span class="numeral">03</span></div></figure></li>
+      <li class="plate" data-src=""><figure><figcaption><span class="plate-id">04</span><span class="plate-label">PLATE</span></figcaption><div class="frame"><span class="numeral">04</span></div></figure></li>
+      <li class="plate" data-src=""><figure><figcaption><span class="plate-id">05</span><span class="plate-label">PLATE</span></figcaption><div class="frame"><span class="numeral">05</span></div></figure></li>
+      <li class="plate" data-src=""><figure><figcaption><span class="plate-id">06</span><span class="plate-label">PLATE</span></figcaption><div class="frame"><span class="numeral">06</span></div></figure></li>
+      <li class="plate" data-src=""><figure><figcaption><span class="plate-id">07</span><span class="plate-label">PLATE</span></figcaption><div class="frame"><span class="numeral">07</span></div></figure></li>
+      <li class="plate" data-src=""><figure><figcaption><span class="plate-id">08</span><span class="plate-label">PLATE</span></figcaption><div class="frame"><span class="numeral">08</span></div></figure></li>
+      <li class="plate" data-src=""><figure><figcaption><span class="plate-id">09</span><span class="plate-label">PLATE</span></figcaption><div class="frame"><span class="numeral">09</span></div></figure></li>
+      <li class="plate" data-src=""><figure><figcaption><span class="plate-id">10</span><span class="plate-label">PLATE</span></figcaption><div class="frame"><span class="numeral">10</span></div></figure></li>
+    </ol>
+  </main>
+
+  <main id="about" class="view">
+    <article class="wrap">
+      <p class="kicker">Installation portfolio</p>
+      <h1>About</h1>
+      <div class="rule" aria-hidden="true"></div>
+      <div class="copy">
+        <p>This is a portfolio for one work. The entrance is a poster. The inner room is a photo essay of ten plates, read in order.</p>
+        <p>Enter <span class="work-name">GET OUT OF YOUR HEAD</span> and the soundscape starts on its own. It plays from the beginning, loops when it ends, and stops only when you leave the room.</p>
+      </div>
+      <dl>
+        <div><dt>Work</dt><dd>GET OUT OF YOUR HEAD</dd></div>
+        <div><dt>Plates</dt><dd>Ten, in sequence</dd></div>
+        <div><dt>Sound</dt><dd>Looping soundscape</dd></div>
+      </dl>
+    </article>
+  </main>
+
+  <audio id="soundscape" src="incantation.m4a" loop preload="none"></audio>
+
+  <script>
+    const audio = document.getElementById("soundscape");
+    const playBtn = document.getElementById("play");
+    const silenceBtn = document.getElementById("silence");
+    const statusEl = document.getElementById("sound-status");
+    let userPaused = false;
+
+    document.querySelectorAll(".plate").forEach((plate) => {
+      const src = plate.dataset.src;
+      if (!src) return;
+      const frame = plate.querySelector(".frame");
+      const img = document.createElement("img");
+      img.alt = "Photo essay plate " + plate.querySelector(".plate-id").textContent;
+      img.src = src;
+      img.addEventListener("error", () => img.remove());
+      frame.appendChild(img);
+    });
+
+    function setSoundUi(mode) {
+      const playing = mode === "playing";
+      statusEl.hidden = !playing;
+      silenceBtn.hidden = !playing;
+      playBtn.hidden = playing;
+      playBtn.textContent = mode === "paused" ? "Resume soundscape" : "Play soundscape";
+    }
+
+    function startSound() {
+      userPaused = false;
+      audio.loop = true;
+      audio.play().then(() => setSoundUi("playing")).catch(() => setSoundUi("blocked"));
+    }
+
+    function stopSound() {
+      userPaused = false;
+      audio.pause();
+      audio.currentTime = 0;
+      setSoundUi("idle");
+    }
+
+    function show(view, fromClick) {
+      document.body.dataset.view = view;
+      document.querySelectorAll(".nav button").forEach((button) => {
+        if (button.dataset.go === view) button.setAttribute("aria-current", "page");
+        else button.removeAttribute("aria-current");
+      });
+      if (view === "essay") {
+        if (fromClick || !userPaused) startSound();
+      } else {
+        stopSound();
+      }
+      window.scrollTo(0, 0);
+    }
+
+    document.querySelectorAll("[data-go]").forEach((button) => {
+      button.addEventListener("mouseenter", () => { audio.preload = "auto"; });
+      button.addEventListener("click", () => {
+        const view = button.dataset.go;
+        if (view === "essay") startSound();
+        location.hash = view;
+        show(view, true);
+      });
+    });
+
+    document.querySelector(".home-link").addEventListener("click", (event) => {
+      event.preventDefault();
+      location.hash = "home";
+      show("home", true);
+    });
+
+    playBtn.addEventListener("click", startSound);
+    silenceBtn.addEventListener("click", () => {
+      userPaused = true;
+      audio.pause();
+      setSoundUi("paused");
+    });
+
+    audio.addEventListener("ended", () => {
+      if (userPaused || document.body.dataset.view !== "essay") return;
+      audio.currentTime = 0;
+      audio.play().catch(() => setSoundUi("blocked"));
+    });
+
+    const initial = (location.hash || "#home").slice(1);
+    show(initial === "essay" || initial === "about" ? initial : "home", false);
+  </script>
+</body>
+</html>
