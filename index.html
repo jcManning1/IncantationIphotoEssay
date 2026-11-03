@@ -1,13 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <!-- Sets the character set, makes the layout fit a phone, and sets the browser-tab title. -->
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>GET OUT OF YOUR HEAD</title>
+
+  <!-- Loads Oswald for the poster-style headings and Newsreader for the body sentences. -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,550;1,6..72,400&family=Oswald:wght@500;600&display=swap" rel="stylesheet">
+
   <style>
+    /* Color and type names used everywhere else: black, off-white, poster yellow. */
     :root {
       --ink: #111111;
       --paper: #f3f1ea;
@@ -18,6 +23,7 @@
       --serif: "Newsreader", Georgia, "Times New Roman", serif;
     }
 
+    /* Removes the browser's default white margin and sets the site's black background and text. */
     * { box-sizing: border-box; }
 
     html, body {
@@ -29,10 +35,13 @@
       -webkit-font-smoothing: antialiased;
     }
 
+    /* Makes buttons look like the rest of the type, not gray browser buttons. */
     button { cursor: pointer; font: inherit; background: none; border: 0; color: inherit; }
+    /* Yellow outline only when someone reaches a control with the keyboard. */
     button:focus-visible, a:focus-visible { outline: 2px solid var(--signal); outline-offset: 3px; }
     ::selection { background: var(--signal); color: var(--ink); }
 
+    /* Hides text visually but leaves it available to screen readers. Used for the home title. */
     .sr-only {
       position: absolute;
       width: 1px;
@@ -45,6 +54,7 @@
       border: 0;
     }
 
+    /* The two page buttons, stuck to the top-right corner on every room, with a yellow stripe. */
     .nav {
       position: fixed;
       top: 0;
@@ -70,8 +80,10 @@
     .nav li + li { border-top: 1px solid rgba(243, 241, 234, 0.15); }
     .nav ul { list-style: none; margin: 0; padding: 0; }
     .nav button:hover { color: var(--signal); }
+    /* The room you are in turns yellow with black type. */
     .nav button[aria-current="page"] { background: var(--signal); color: var(--ink); }
 
+    /* "Home" at the top left. Hidden on the poster, shown only after you leave it. */
     .home-link {
       position: fixed;
       top: 0;
@@ -93,11 +105,13 @@
     .home-link:hover { color: var(--signal); }
     body:not([data-view="home"]) .home-link { display: flex; }
 
+    /* All three rooms are in the page. Only the one named on <body data-view> is visible. */
     .view { display: none; min-height: 100dvh; }
     body[data-view="home"] #home,
     body[data-view="essay"] #essay,
     body[data-view="about"] #about { display: block; }
 
+    /* Poster fills the screen without cropping. Looks for poster.jpg beside this file. */
     #home img {
       display: block;
       width: 100%;
@@ -106,9 +120,11 @@
       background: var(--ink);
     }
 
+    /* Pushes the essay and about text down so it does not sit under the menu. */
     #essay { padding: 8rem 1.25rem 7rem; }
     #about { padding: 9rem 1.5rem 6rem; background: var(--paper); color: var(--ink); }
 
+    /* Shared column width, small labels, and the big titles. */
     .wrap { max-width: 48rem; margin: 0 auto; }
     .kicker {
       margin: 0;
@@ -136,11 +152,13 @@
       color: var(--haze);
     }
 
+    /* Yellow bar and the about-page statement. */
     .rule { width: 4rem; height: 4px; margin-top: 2rem; background: var(--signal); }
     #about .copy { margin-top: 2rem; font-size: 1.25rem; line-height: 1.6; }
     #about .copy p { margin: 0 0 1.5rem; }
     #about .work-name { font-family: var(--display); letter-spacing: 0.04em; }
 
+    /* The three labels at the bottom of About: Work, Plates, Sound. */
     dl {
       display: grid;
       gap: 2rem;
@@ -151,6 +169,7 @@
     dt { font-family: var(--display); font-size: 0.875rem; letter-spacing: 0.16em; text-transform: uppercase; }
     dd { margin: 0.5rem 0 0; font-family: var(--display); font-size: 1.5rem; line-height: 1.15; }
 
+    /* Sound row under the essay title: status text, Silence, or Play. */
     .sound { display: flex; flex-wrap: wrap; align-items: center; gap: 1rem; margin-top: 2rem; }
     .sound p { margin: 0; display: flex; align-items: center; gap: 0.75rem; font-family: var(--display); letter-spacing: 0.04em; color: var(--signal); }
     .play {
@@ -173,6 +192,7 @@
     }
     .silence:hover { color: var(--signal); }
 
+    /* Three yellow bars that pulse while the soundscape is playing. */
     .meter { display: flex; align-items: flex-end; gap: 3px; height: 14px; }
     .meter span {
       width: 3px;
@@ -184,6 +204,7 @@
     .meter span:nth-child(2) { animation-delay: 0.15s; }
     .meter span:nth-child(3) { animation-delay: 0.3s; }
 
+    /* The ten photographs, stacked in order, with a yellow line down the left. */
     .plates {
       list-style: none;
       margin: 4rem auto 0;
@@ -203,6 +224,7 @@
     }
     .plate-id { font-size: 1.5rem; color: var(--signal); }
     .plate-label { font-size: 0.875rem; letter-spacing: 0.18em; color: var(--haze); }
+    /* Empty frame. A photo replaces the big outlined number when data-src is set. */
     .frame {
       position: relative;
       aspect-ratio: 4 / 5;
@@ -229,9 +251,11 @@
       0%, 100% { transform: scaleY(0.35); }
       50% { transform: scaleY(1); }
     }
+    /* Stops the pulsing bars if the visitor has asked the system to reduce motion. */
     @media (prefers-reduced-motion: reduce) {
       .meter span { animation: none; transform: none; }
     }
+    /* Larger titles and more side space on a laptop. */
     @media (min-width: 640px) {
       h1 { font-size: 4.5rem; }
       #about h1 { font-size: 6rem; }
@@ -243,8 +267,10 @@
   </style>
 </head>
 <body data-view="home">
+  <!-- Way back to the poster. The CSS hides this while data-view is "home". -->
   <a class="home-link" href="#home">Home</a>
 
+  <!-- Top-right menu. data-go tells the script which room to open. -->
   <nav class="nav" aria-label="Pages">
     <ul>
       <li><button type="button" data-go="essay">GET OUT OF YOUR HEAD</button></li>
@@ -252,30 +278,34 @@
     </ul>
   </nav>
 
+  <!-- Room 1: the poster. -->
   <main id="home" class="view">
     <h1 class="sr-only">GET OUT OF YOUR HEAD</h1>
     <img src="poster.jpg" alt="Poster for GET OUT OF YOUR HEAD: a blurred head inside a swirling vortex, the title repeated in white and once in yellow.">
   </main>
 
+  <!-- Room 2: the photo essay and the sound controls. -->
   <main id="essay" class="view">
     <header class="wrap">
       <p class="kicker">Photo essay</p>
       <h1>GET OUT OF YOUR HEAD</h1>
       <p class="lede">Ten plates, in order. The soundscape starts with this room and loops until you leave.</p>
       <div class="sound">
+        <!-- Shown only while audio is playing. -->
         <p id="sound-status" hidden>
           <span class="meter" aria-hidden="true"><span></span><span></span><span></span></span>
           Soundscape looping
         </p>
         <button type="button" class="silence" id="silence" hidden>Silence</button>
+        <!-- Shown when sound is stopped or the browser blocked autoplay. -->
         <button type="button" class="play" id="play">Play soundscape</button>
       </div>
     </header>
 
     <!--
-      Add a photo by setting data-src on a plate, for example:
-      <li class="plate" data-src="01.jpg">
-      Put 01.jpg through 10.jpg in this same folder.
+      Ten plates, read top to bottom.
+      To add a photo, put the file in this same folder and set data-src, for example data-src="01.jpg".
+      Leave data-src empty and the outlined number stays.
     -->
     <ol class="plates">
       <li class="plate" data-src=""><figure><figcaption><span class="plate-id">01</span><span class="plate-label">PLATE</span></figcaption><div class="frame"><span class="numeral">01</span></div></figure></li>
@@ -291,6 +321,7 @@
     </ol>
   </main>
 
+  <!-- Room 3: the short wall text for the work. -->
   <main id="about" class="view">
     <article class="wrap">
       <p class="kicker">Installation portfolio</p>
@@ -308,6 +339,7 @@
     </article>
   </main>
 
+  <!-- The sound file. loop repeats it. It does not download until you head toward the essay. -->
   <audio id="soundscape" src="incantation.m4a" loop preload="none"></audio>
 
   <script>
@@ -317,6 +349,7 @@
     const statusEl = document.getElementById("sound-status");
     let userPaused = false;
 
+    // If a plate has data-src, put that image in the frame. A missing file leaves the number.
     document.querySelectorAll(".plate").forEach((plate) => {
       const src = plate.dataset.src;
       if (!src) return;
@@ -328,6 +361,7 @@
       frame.appendChild(img);
     });
 
+    // Swaps the sound buttons to match playing, paused, or blocked.
     function setSoundUi(mode) {
       const playing = mode === "playing";
       statusEl.hidden = !playing;
@@ -336,12 +370,14 @@
       playBtn.textContent = mode === "paused" ? "Resume soundscape" : "Play soundscape";
     }
 
+    // Starts the file. Must be called from a click or the browser will block it.
     function startSound() {
       userPaused = false;
       audio.loop = true;
       audio.play().then(() => setSoundUi("playing")).catch(() => setSoundUi("blocked"));
     }
 
+    // Stops the sound and rewinds it so the next visit starts at the beginning.
     function stopSound() {
       userPaused = false;
       audio.pause();
@@ -349,6 +385,7 @@
       setSoundUi("idle");
     }
 
+    // Shows one room, marks the matching menu button, and starts or stops the sound.
     function show(view, fromClick) {
       document.body.dataset.view = view;
       document.querySelectorAll(".nav button").forEach((button) => {
@@ -363,6 +400,7 @@
       window.scrollTo(0, 0);
     }
 
+    // Menu clicks. Entering the essay starts the sound inside the click, then changes the room.
     document.querySelectorAll("[data-go]").forEach((button) => {
       button.addEventListener("mouseenter", () => { audio.preload = "auto"; });
       button.addEventListener("click", () => {
@@ -373,12 +411,14 @@
       });
     });
 
+    // Home returns to the poster and stops the sound.
     document.querySelector(".home-link").addEventListener("click", (event) => {
       event.preventDefault();
       location.hash = "home";
       show("home", true);
     });
 
+    // Play and Silence on the essay page. Silence pauses without rewinding.
     playBtn.addEventListener("click", startSound);
     silenceBtn.addEventListener("click", () => {
       userPaused = true;
@@ -386,12 +426,14 @@
       setSoundUi("paused");
     });
 
+    // If the browser ignores loop, restart the file when it reaches the end.
     audio.addEventListener("ended", () => {
       if (userPaused || document.body.dataset.view !== "essay") return;
       audio.currentTime = 0;
       audio.play().catch(() => setSoundUi("blocked"));
     });
 
+    // On load, open the room named after the # in the address. No hash means the poster.
     const initial = (location.hash || "#home").slice(1);
     show(initial === "essay" || initial === "about" ? initial : "home", false);
   </script>
